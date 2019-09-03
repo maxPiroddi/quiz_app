@@ -2,7 +2,7 @@
 #   Initialize required files
 file = File.open("questions.txt")
 file = File.open("results.json")
-results_file = File.read("results.json")
+results_file = File.open("results.json")
 questions_file = File.read("questions.txt")
 require 'json'
 #==============================================================================================================================#
@@ -53,10 +53,14 @@ questions = [
 
 #==============================================================================================================================#
 #   Introductions
+reply = ""
+#==============================================================================================================================#
+#   Bring JSON into an array, push the new data on the end, and then submit back 
 
 #==============================================================================================================================#
 #   Application Run
 while true
+    system "clear"
     puts
     puts "●▬▬▬▬▬▬▬๑۩۩๑▬▬▬▬▬▬▬●"
     puts "Welcome to QuikQuiz!"     #Decorations & Introductions
@@ -67,62 +71,89 @@ while true
     if entry == "student"       # Student Path
         def test(questions)
             require 'time'
+            results_file = File.open("results.json")
             answer = "" # We will store all of our users answers inside this variable
             score = 0
             counter = 1
-            system "clear"
-            puts
-            puts "●▬▬▬▬▬▬▬▬▬๑۩۩๑▬▬▬▬▬▬▬▬●"
-            puts "Please enter your name:"
-            puts "●▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬●"
-            student_name = gets.chomp.downcase
-            if student_name.empty?
-                puts "Invalid selection: Please enter a name."    # TO DO --> MAKE THIS LOOP BACK TO NAME ENTRY
-            else
-                for question in questions
-                    system "clear"
-                    puts "Question #{counter}"
-                    puts question.prompt
-                    answer = gets.chomp()
-                    if answer == question.answer
-                        score += 1
-                    end
-                    counter += 1
-                end
+            while counter < 11
+                system "clear"
+                puts
+                puts "●▬▬▬▬▬▬▬▬▬๑۩۩๑▬▬▬▬▬▬▬▬●"
+                puts "Please enter your name:"
+                puts "●▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬●"
+    
+                student_name = gets.chomp.downcase
 
-                if score == questions.length()
-                    puts "Congratulations! You have a perfect score."
-                elsif score >= (questions.length() * 0.75)
-                    puts "Well done! You received #{score}/#{questions.length()}."
-                elsif score >= (questions.length() * 0.5)
-                    puts "You received #{score}/#{questions.length()}."
+                if student_name.empty?
+                    system "clear"
+                    puts
+                    puts "Invalid selection: Please enter a name."    # TO DO --> MAKE THIS LOOP BACK TO NAME ENTRY
+                    next
                 else
-                    puts "You have failed the quiz, with a score of #{score}/#{questions.length}." 
+                    for question in questions
+                        system "clear"
+                        puts "Question #{counter}"
+                        puts question.prompt
+                        answer = gets.chomp()
+                        if answer == question.answer
+                            score += 1
+                        end
+                        counter += 1
+                    end
                 end
-                File.open("results.json", "a+") do |line|
-                    line.print "{   \"name\": " + "\"#{student_name.to_s}\"," 
-                    line.print "    \"score\": " + "\"#{score.to_s}\","
-                    line.print "    \"date\": " + "\"#{Time.now.strftime("%d-%b-%y")}\" },"
-                end
+                system "clear"
+                    if score == questions.length()
+                        puts "Congratulations! You have a perfect score."
+                    elsif score >= (questions.length() * 0.75)
+                        puts "Well done! You received #{score}/#{questions.length()}."
+                    elsif score >= (questions.length() * 0.5)
+                        puts "You received #{score}/#{questions.length()}."
+                    else
+                        puts "You have failed the quiz, with a score of #{score}/#{questions.length}." 
+                    end
+                    # File.open("results.json", "a+") do |line|
+                    #     line.print "{   \"name\": " + "\"#{student_name.to_s}\"," 
+                    #     line.print "    \"score\": " + "\"#{score.to_s}\","
+                    #     line.print "    \"date\": " + "\"#{Time.now.strftime("%d-%b-%y")}\" },"
+                    #     line.print "]"
+                    # end
+
+                    data_hash=JSON.parse(results_file)
+                        working_array = []
+                        data_hash = working_array  ##FIGURE OUT HOW TO MAKE IT SO THAT THIS EXTRACTS THE STRING
+                        working_array.push("{   \"name\": \"#{student_name.to_s}\", \"score\": \"#{score.to_s}\", \"date\": \"#{Time.now.strftime("%d-%b-%y")}\"}")
+                        data_hash.close()
+                        working_array.to_json
+
+                    File.open("results.json", "w")
+                        print working_array
+
+                    
             end
         end
 
         test(questions)
-
-        break
+        puts
+        puts "Enter any key to try again, or type 'exit' to quit!"
+        reply = gets.chomp.downcase
+        if reply == "exit"
+            break
+        else
+            next
+        end
 
     elsif entry == "teacher"
         puts "Welcome teacher!"
         
-        data_hash=JSON.parse(results_file)
+        # data_hash=JSON.parse(results_file)
         
-        for item in data_hash do
-            puts "Name: " + item["name"].capitalize
-            puts "Score: " + item["score"] + "/10"
-            puts "Date: " + item["date"]
-            puts
-            puts
-        end
+        # for item in data_hash do
+        #     puts "Name: " + item["name"].capitalize
+        #     puts "Score: " + item["score"] + "/10"
+        #     puts "Date: " + item["date"]
+        #     puts
+        #     puts
+        # end
 
         break
     
