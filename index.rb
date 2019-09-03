@@ -1,7 +1,10 @@
 #==============================================================================================================================#
 #   Initialize required files
 file = File.open("questions.txt")
-file = File.open("results.txt")
+file = File.open("results.json")
+results_file = File.read("results.json")
+questions_file = File.read("questions.txt")
+require 'json'
 #==============================================================================================================================#
 
 system "clear" #Make sure CLI line is cleared once app starts
@@ -15,82 +18,119 @@ class Question
         @prompt = prompt
         @answer = answer
     end
+
+    # def pick_random_line
+    #     File.readlines("questions.txt").sample  --> TO DO: Get the randomizer working to draw out questions
+    # end
 end
 
 #==============================================================================================================================#
+p1 = "What type of animal is Bambi? \n(a) Bear \n(b) Deer \n(c) Bird"
+p2 = "Which country features a maple leaf on its flag? \n(a) Canada \n(b) Norway \n(c) Pakistan"
+p3 = "What game features the terms love, deuce, match and volley? \n(a) Soccer \n(b) Tennis \n(c) Gold"
+p4 = "Name a US state beginning with K. \n(a) Kandeer \n(b) Kennetuck \n(c) Kansas"
+p5 = "Who wrote the 'Harry Potter' series? \n(a) JK Rowling \n(b) JRR Tolkien \n(c) Fyodir Dostoyevski"
+p6 ="What is the currency of India? \n(a) Indian Dollar \n(b) Gold Pieces \n(c) Rupee"
+p7 = "Who is Winnie the Pooh's gloomy donkey friend? \n(a) Tigger \n(b) Eeyore \n(c) Roberto"
+p8 = "What is the standard unit of distance in the metric system? \n(a) Meter \n(b) Foot \n(c) Kilometer"
+p9 = "What chemical element is diamond made of? \n(a) Carbon \n(b) Jewel \n(c) Ruby"
+p10 = "What is the name of the 'tool' needed to play snooker or billiards to hit the ball? \n(a) Stick \n(b) Cue \n(c) Five-Iron"
 
-p1 = "What is a boolean? \n(a) A true/false statement \n(b) A whole number \n(c) The capital of North Dakota"
-p2 = "Who was George Washington? \n(a) The first president of the USA \n(b) The starting striker for Milan FC \n(c) A civil rights hero"
-p3 = "What is 2 + 3? \n(a) Four \n(b) Seven \n(c) Five"
-p4 = "What is KFC? \n(a) Kentucky Fried Chicken \n(b) Four \n(c) Green"
-p5 = "What is a boolean? \n(a) A true/false statement \n(b) A whole number \n(c) The capital of North Dakota"
-p6 = "Who was George Washington? \n(a) The first president of the USA \n(b) The starting striker for Milan FC \n(c) A civil rights hero"
-p7 = "What is 2 + 3? \n(a) Four \n(b) Seven \n(c) Five"
-p8 = "What is KFC? \n(a) Kentucky Fried Chicken \n(b) Four \n(c) Green"
-p9 = "What is a boolean? \n(a) A true/false statement \n(b) A whole number \n(c) The capital of North Dakota"
-p10 = "Who was George Washington? \n(a) The first president of the USA \n(b) The starting striker for Milan FC \n(c) A civil rights hero"
 
 
 questions = [
-    Question.new(p1, "a"),
+    Question.new(p1, "b"),
     Question.new(p2, "a"),
-    Question.new(p3, "c"),
-    Question.new(p4, "a"),
+    Question.new(p3, "b"),
+    Question.new(p4, "c"),
     Question.new(p5, "a"),
     Question.new(p6, "c"),
-    Question.new(p7, "a"),
+    Question.new(p7, "b"),
     Question.new(p8, "a"),
     Question.new(p9, "a"),
-    Question.new(p10, "c")
+    Question.new(p10, "b")
 ]
 
 #==============================================================================================================================#
 #   Introductions
 
-puts "Welcome to QuikQuiz!"
-puts "Are you a student or teacher?"
-entry = gets.chomp.downcase
-
 #==============================================================================================================================#
 #   Application Run
+while true
+    puts
+    puts "●▬▬▬▬▬▬▬๑۩۩๑▬▬▬▬▬▬▬●"
+    puts "Welcome to QuikQuiz!"     #Decorations & Introductions
+    puts "●▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬●"
+    puts "Are you a student or teacher?"
+    entry = gets.chomp.downcase
 
-if entry == "student"
-    def test(questions)
-        answer = "" # We will store all of our users answers inside this variable
-        score = 0
-        counter = 1
-        puts "Please enter your name:"
-        student_name = gets.chomp.downcase
-        for question in questions
-            puts "Question #{counter}"
-            puts question.prompt
-            answer = gets.chomp()
-            if answer == question.answer
-                score += 1
-            end
+    if entry == "student"       # Student Path
+        def test(questions)
+            require 'time'
+            answer = "" # We will store all of our users answers inside this variable
+            score = 0
+            counter = 1
             system "clear"
-            counter += 1
+            puts
+            puts "●▬▬▬▬▬▬▬▬▬๑۩۩๑▬▬▬▬▬▬▬▬●"
+            puts "Please enter your name:"
+            puts "●▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬●"
+            student_name = gets.chomp.downcase
+            if student_name.empty?
+                puts "Invalid selection: Please enter a name."    # TO DO --> MAKE THIS LOOP BACK TO NAME ENTRY
+            else
+                for question in questions
+                    system "clear"
+                    puts "Question #{counter}"
+                    puts question.prompt
+                    answer = gets.chomp()
+                    if answer == question.answer
+                        score += 1
+                    end
+                    counter += 1
+                end
+
+                if score == questions.length()
+                    puts "Congratulations! You have a perfect score."
+                elsif score >= (questions.length() * 0.75)
+                    puts "Well done! You received #{score}/#{questions.length()}."
+                elsif score >= (questions.length() * 0.5)
+                    puts "You received #{score}/#{questions.length()}."
+                else
+                    puts "You have failed the quiz, with a score of #{score}/#{questions.length}." 
+                end
+                File.open("results.json", "a+") do |line|
+                    line.print "{   \"name\": " + "\"#{student_name.to_s}\"," 
+                    line.print "    \"score\": " + "\"#{score.to_s}\","
+                    line.print "    \"date\": " + "\"#{Time.now.strftime("%d-%b-%y")}\" },"
+                end
+            end
         end
 
-        if score == questions.length()
-            puts "Congratulations! You have a perfect score."
-        elsif score >= (questions.length() * 0.75)
-            puts "Well done! You received #{score}/#{questions.length()}."
-        elsif score >= (questions.length() * 0.5)
-            puts "You received #{score}/#{questions.length()}."
-        else
-            puts "You have failed the quiz, with a score of #{score}/#{questions.length}." 
+        test(questions)
+
+        break
+
+    elsif entry == "teacher"
+        puts "Welcome teacher!"
+        
+        data_hash=JSON.parse(results_file)
+        
+        for item in data_hash do
+            puts "Name: " + item["name"].capitalize
+            puts "Score: " + item["score"] + "/10"
+            puts "Date: " + item["date"]
+            puts
+            puts
         end
-        File.open("results.txt", "w") do |line|
-            line.puts student_name 
-            line.puts score
-            line.puts Time.now
-        end
+
+        break
+    
+    else
+        puts "Invalid selection: Please enter 'student' or 'teacher'"
+        next
     end
-
-    test(questions)
-elsif entry == "teacher"
-    puts "Welcome teacher!"
-else
-    puts "Invalid selection: Please enter 'student' or 'teacher'"
 end
+#==============================================================================================================================#
+#           Farewell for now!
+#==============================================================================================================================#
