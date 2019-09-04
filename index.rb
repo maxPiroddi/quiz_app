@@ -1,10 +1,8 @@
 #==============================================================================================================================#
 #   Initialize required files
-file = File.open("questions.txt")
-file = File.open("results.json")
-results_file = File.read("results.json")
-questions_file = File.read("questions.txt")
 require 'json'
+require 'colorize'
+require 'time'
 #==============================================================================================================================#
 
 system "clear" #Make sure CLI line is cleared once app starts
@@ -24,7 +22,6 @@ class Question
     # end
 end
 
-#==============================================================================================================================#
 #   Temporary storage of questions until questins file is functioning
 
 p1 = "What type of animal is Bambi? \n(a) Bear \n(b) Deer \n(c) Bird"
@@ -56,53 +53,58 @@ questions = [
 #==============================================================================================================================#
 #   Introductions
 #==============================================================================================================================#
-#   Bring JSON into an array, push the new data on the end, and then submit back 
+#   Method to try parse the file --> If it is empty, it will print a fresh array
+file = File.read('results.json')
+
+def parse_json(file)
+    JSON.parse(file)            # Try parse the file --> If it's empty, we initialize it with []
+rescue
+    File.open("results.json", "a") do |f|
+    f.write([]).to_json
+    end
+end
 
 #==============================================================================================================================#
 #   Application Run
 while true
     system "clear"
-    puts
-    puts "●▬▬▬▬▬▬▬▬▬๑۩۩๑▬▬▬▬▬▬▬▬▬●"
-    puts "●▬Welcome to QuikQuiz!▬●"     #Decorations & Introductions
-    puts "●▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬●"
-    puts "Are you a student or teacher?"
+    puts "●▬▬▬▬▬▬▬▬▬▬▬▬▬๑۩۩๑▬▬▬▬▬▬▬▬▬▬▬▬●".colorize(:color => :light_blue)
+    puts "●▬▬▬▬Welcome▬▬to▬▬QuikQuiz!▬▬▬●".colorize(:color => :light_blue)     #Decorations & Introductions
+    puts "●▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬●".colorize(:color => :light_blue)
+    puts "● Are you a student or teacher?"
+    print    "● "
     entry = gets.chomp.downcase
 
     if entry == "student"       # Student Path
+        system "clear"
+        puts "●▬▬▬▬▬▬▬▬▬▬▬▬▬๑۩۩๑▬▬▬▬▬▬▬▬▬▬▬▬●".colorize(:color => :light_blue)
+        puts "●▬▬▬▬▬Welcome▬to▬the▬Quiz!▬▬▬▬●".colorize(:color => :light_blue)
+        puts "●▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬●".colorize(:color => :light_blue)
+        puts "● Please enter your name:"
+        print    "● "
+        student_name = gets.chomp.downcase
+        
+        if student_name.empty?
+            system "clear"
+            puts
+            puts "Invalid selection: Please enter a name."    # TO DO --> MAKE THIS LOOP BACK TO NAME ENTRY
+            next
+        end
         def test(questions)
-            require 'time'
             results_file = File.open("results.json")
             answer = "" # We will store all of our users answers inside this variable
-            score = 0
             counter = 1
+            score = 0
             while counter < 11
-                system "clear"
-                puts
-                puts "●▬▬▬▬▬▬▬▬▬▬▬๑۩۩๑▬▬▬▬▬▬▬▬▬▬●"
-                puts "●▬▬▬Welcome to the Quiz!▬▬●"
-                puts "●▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬●"
-                puts "Please enter your name:"
-    
-                student_name = gets.chomp.downcase
-
-                if student_name.empty?
+                for question in questions
                     system "clear"
-                    puts
-                    puts "Invalid selection: Please enter a name."    # TO DO --> MAKE THIS LOOP BACK TO NAME ENTRY
-                    next
-                
-                else
-                    for question in questions
-                        system "clear"
-                        puts "Question #{counter}"
-                        puts question.prompt
-                        answer = gets.chomp()
-                        if answer == question.answer
-                            score += 1
-                        end
-                        counter += 1
+                    puts "Question #{counter}".colorize(:color => :light_blue)
+                    puts question.prompt
+                    answer = gets.chomp().downcase
+                    if answer == question.answer
+                        score += 1
                     end
+                    counter += 1
                 end
                 system "clear"
                     if score == questions.length()
@@ -122,64 +124,85 @@ while true
                         puts "You have failed the quiz, with a score of #{score}/#{questions.length}." 
                         puts
                     end
-                    # File.open("results.json", "a+") do |line|
-                    #     line.print "{   \"name\": " + "\"#{student_name.to_s}\"," 
-                    #     line.print "    \"score\": " + "\"#{score.to_s}\","
-                    #     line.print "    \"date\": " + "\"#{Time.now.strftime("%d-%b-%y")}\" },"
-                    #     line.print "]"
-                    # end
-
-                    # data_hash=JSON.parse(results_file)
-                    #     working_array = []
-                    #     data_hash = working_array  ##FIGURE OUT HOW TO MAKE IT SO THAT THIS EXTRACTS THE STRING
-                    #     working_array.push("{   \"name\": \"#{student_name.to_s}\", \"score\": \"#{score.to_s}\", \"date\": \"#{Time.now.strftime("%d-%b-%y")}\"}")
-                    #     data_hash.close()
-                    #     working_array.to_json
-
-                    # File.open("results.json", "w")
-                    #     print working_array
-
-                    
             end
+            return score
         end
 
-        test(questions)
+        score = test(questions)
+
+        score_string = score.to_s
+
+        date = Time.now.strftime("%d-%b-%y") # Check the time for storage
+
+        file = File.read('results.json')
+
+        parse_json(file)    # Call method
+
+        hash = {"name": student_name, "score": score_string, "date": date}
+
+        file = File.read('results.json')
+
+        working = parse_json(file)
+
+        working.push(hash)
+
+        File.open('results.json', "w") do |f|
+            f.write(working.to_json)
+        end
+
         puts
-        puts "Enter any key to try again, or type 'exit' to quit!"
+        puts "Enter any key to return to the main menu, or type 'exit' to quit!"
         reply = gets.chomp.downcase
         if reply == "exit"
+            system "clear"
             break
         else
+            system "clear"
             next
         end
 
     elsif entry == "teacher"
-        
         system "clear"
-
-        puts "Welcome teacher!"
         puts
-        data_hash=JSON.parse(results_file)
-        
-        for item in data_hash do
-            puts "Name: " + item["name"].capitalize
-            puts "Score: " + item["score"] + "/10"
-            puts "Date: " + item["date"]
+        puts "Please enter your password:"
+        password = gets.chomp
+        if password == "password"
+            system "clear"
             puts
+            puts "●▬▬▬▬▬▬▬๑۩۩๑▬▬▬▬▬▬▬●".colorize(:color => :light_blue)
+            puts "Student Quiz Results".colorize(:color => :light_blue)
+            puts "●▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬●".colorize(:color => :light_blue)
             puts
-        end
-        puts
+            data_hash=JSON.parse(results_file)
+            
+            for item in data_hash do
+                puts "Name: " + item["name"].capitalize
+                puts "Score: " + item["score"] + "/10"
+                puts "Date: " + item["date"]
+                puts
+                puts
+            end
+            puts
 
-        puts "Enter any key to try again, or type 'exit' to quit!"
-        reply = gets.chomp.downcase
-        if reply == "exit"
-            break                           # CHANGE THIS TO REFLECT THE NEEDS OF THE TEACHER SECTION
-        else
+            puts "Type 'exit' to quit, or any key to return to main menu.".colorize(:color => :light_blue)
+            reply = gets.chomp.downcase
+            if reply == "exit"
+                system "clear"
+                break                           # CHANGE THIS TO REFLECT THE NEEDS OF THE TEACHER SECTION
+            else
+                system "clear"
+                next
+            end
+        else 
+            system "clear"
+            puts
+            puts "●▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬●"
+            puts "Incorrect Password: Please try again."
+            puts "●▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬●"
+            puts
             next
         end
-    
     else
-        puts "Invalid selection: Please enter 'student' or 'teacher'"
         next
     end
 end
