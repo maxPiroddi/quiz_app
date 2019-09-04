@@ -138,7 +138,7 @@ while true
 
         parse_json(file)    # Call method
 
-        hash = {"name": student_name, "score": score_string, "date": date}
+        hash = {"name": student_name, "score": score_string, "date": date.to_s}
 
         file = File.read('results.json')
 
@@ -173,7 +173,9 @@ while true
             puts "Student Quiz Results".colorize(:color => :light_blue)
             puts "●▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬●".colorize(:color => :light_blue)
             puts
-            data_hash=JSON.parse(results_file)
+
+            file = File.read('results.json')
+            data_hash = parse_json(file)
             
             for item in data_hash do
                 puts "Name: " + item["name"].capitalize
