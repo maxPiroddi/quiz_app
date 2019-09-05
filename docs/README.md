@@ -43,7 +43,7 @@ The app has three optional arguments for added functionality:
 ## Application FAQ's
 Student Portal:
 - If your 'name' entry is blank, the program will return you to the previous screen.
-- Remember: No answer is still an answer!
+- Your name must only contain 'a-z' & 'A-Z'. Any special characters or numbers will not be accepted.
 
 Teacher Portal:
 - By default, a terminal screen will display 5-6 recent results - depending on terminal-zoom.
@@ -113,7 +113,7 @@ The application is controlled via text inputs in the terminal, with an initial o
 ### Control Flow Diagram
 
 [Control Flow](./flowchart.pdf)
-#
+ #
 ### Implementation Plan
 [Image One](./screen_one.png)
 

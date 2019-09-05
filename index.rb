@@ -17,8 +17,7 @@ if argv_copy.include? "-h"
     puts
     puts "Student Portal:"
     puts "● If your 'name' entry is blank, the program will return you to the previous screen."
-    puts "● Remember: No answer is still an answer!"
-    puts
+    puts "● Your name must only contain 'a-z' & 'A-Z'. Any special characters or numbers will not be accepted."
     puts "Teacher Portal:"
     puts "● By default, a terminal screen will display 5-6 recent results - depending on terminal-zoom."
     puts "● To see the full results, feel free to zoom in or out, or to scroll up and down."
