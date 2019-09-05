@@ -1,51 +1,12 @@
 #==============================================================================================================================#
-#   Initialize required files
+#   Introductions
+
 require 'json'
 require 'colorize'
 require 'time'
-#==============================================================================================================================#
-
+require_relative './lib/class'
 system "clear" #Make sure CLI line is cleared once app starts
 
-#==============================================================================================================================#
-#   Class required for access to each question
-
-class Question
-    attr_accessor :prompt, :answer
-
-    def initialize(prompt, answer)
-        @prompt = prompt
-        @answer = answer
-    end
-end
-
-#================================= RESULTS
-file = File.read('results.json')
-
-def parse_json_results(file)
-    JSON.parse(file)            # Try parse the file --> If it's empty, we initialize it with []
-rescue
-    File.open("results.json", "a") do |f|
-    f.write([]).to_json
-    end
-end
-#================================= QUESTIONS
-q_file = File.read('questions.json')
-
-def parse_json_questions(file)
-    JSON.parse(file)            # Try parse the file --> If it's empty, we initialize it with []
-rescue
-    File.open("questions.json", "a") do |f|
-    f.write([]).to_json
-    end
-end
-
-
-
-#==============================================================================================================================#
-#   Introductions
-#==============================================================================================================================#
-#   Method to try parse the file --> If it is empty, it will print a fresh array
 
 #==============================================================================================================================#
 #   Application Run
@@ -60,7 +21,7 @@ while true
 
     if entry == "student"       # Student Path
 #================================= Time to generate questions
-        q_file = File.read('questions.json')
+        q_file = File.read('./lib/questions.json')
         question_array = parse_json_questions(q_file)
         
         p1 = question_array.delete_at(rand(question_array.length))
@@ -103,7 +64,7 @@ while true
             next
         end
         def test(working_questions)
-            results_file = File.open("results.json")
+            results_file = File.open("./lib/results.json")
             answer = "" # We will store all of our users answers inside this variable
             counter = 1
             score = 0
@@ -147,19 +108,19 @@ while true
 
         date = Time.now.strftime("%d-%b-%y") # Check the time for storage
 
-        file = File.read('results.json')
+        file = File.read('./lib/results.json')
 
         parse_json_results(file)    # Call method
 
         hash = {"name": student_name, "score": score_string, "date": date.to_s}
 
-        file = File.read('results.json')
+        file = File.read('./lib/results.json')
 
         working = parse_json_results(file)
 
         working.push(hash)
 
-        File.open('results.json', "w") do |f|
+        File.open('./lib/results.json', "w") do |f|
             f.write(working.to_json)
         end
 
@@ -187,7 +148,7 @@ while true
             puts "●▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬●".colorize(:color => :light_blue)
             puts
 
-            file = File.read('results.json')
+            file = File.read('./lib/results.json')
             data_hash = parse_json_results(file)
             
             for item in data_hash do
