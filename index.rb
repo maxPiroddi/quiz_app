@@ -42,10 +42,14 @@ while true
     puts "●▬▬▬▬▬▬▬▬▬▬▬▬▬๑۩۩๑▬▬▬▬▬▬▬▬▬▬▬▬●".colorize(:color => :light_blue)
     puts "●▬▬▬▬Welcome▬▬to▬▬QuikQuiz!▬▬▬●".colorize(:color => :light_blue)     # Decorations & Introductions
     puts "●▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬●".colorize(:color => :light_blue)
+    puts "● Enter \"quit\" to exit."
     puts "● Are you a student or teacher?"
     print    "● "
     entry = gets.chomp.downcase
     system "clear"
+    if entry == "quit"
+        exit
+    end
     if entry == "student"                                                      # Student Path
         while true                                                                          # Time to generate questions
             q_file = File.read('./lib/questions.json')
@@ -61,7 +65,7 @@ while true
                 p8 = question_array.delete_at(rand(question_array.length))
                 p9 = question_array.delete_at(rand(question_array.length)) 
                 p10 = question_array.delete_at(rand(question_array.length))
-            rescue
+            rescue                                                                  # If the questions file is blank, we will re-create with []
                 puts
                 puts "● questions.JSON has been re-created: Please enter new questions."
                 puts
@@ -108,7 +112,7 @@ while true
                             puts "Question #{counter}".colorize(:color => :light_blue)
                             puts question.prompt
                             answer = gets.chomp().downcase
-                            if answer.match? /\A[a-c]{1}\z/
+                            if answer.match? /\A[a-c]{1}\z/                             # Answer MUST be a, b or c, else no movement.
                                 if answer == question.answer
                                     score += 1
                                 end
@@ -167,9 +171,9 @@ while true
             end
                                                                                     # Storage complete
             puts
-            puts "Enter any key to try again, or type 'exit' to quit!"
+            puts "Enter any key to try again, or type 'quit' for main menu!"
             reply = gets.chomp.downcase
-            if reply == "exit"
+            if reply == "exit" || "quit"
                 system "clear"
                 break
             else
@@ -204,9 +208,9 @@ while true
             rescue
                 break
             end
-            puts "Type 'exit' to quit, or any key to return to main menu.".colorize(:color => :light_blue)
+            puts "Type 'quit' to finish, or any key to return to main menu.".colorize(:color => :light_blue)
             reply = gets.chomp.downcase
-            if reply == "exit"
+            if reply == "exit" || "quit"                                                  # Exit option
                 system "clear"
                 break                        
             else

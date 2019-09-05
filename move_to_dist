@@ -1,3 +1,5 @@
 #!/usr/bin/env sh
-mkdir dist
-cp index.rb ./dist
+mkdir ./dist
+cp ./index.rb ./dist
+cp ./lib ./dist
+cp ./docs ./dist
