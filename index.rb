@@ -9,60 +9,43 @@ system "clear" #Make sure CLI line is cleared once app starts
 
 #==============================================================================================================================#
 #   Class required for access to each question
-class Question  
+
+class Question
     attr_accessor :prompt, :answer
 
     def initialize(prompt, answer)
         @prompt = prompt
         @answer = answer
     end
-
-    # def pick_random_line
-    #     File.readlines("questions.txt").sample  --> TO DO: Get the randomizer working to draw out questions
-    # end
 end
 
-#   Temporary storage of questions until questins file is functioning
-
-p1 = "What type of animal is Bambi? \n(a) Bear \n(b) Deer \n(c) Bird"
-p2 = "Which country features a maple leaf on its flag? \n(a) Canada \n(b) Norway \n(c) Pakistan"
-p3 = "What game features the terms love, deuce, match and volley? \n(a) Soccer \n(b) Tennis \n(c) Gold"
-p4 = "Name a US state beginning with K. \n(a) Kandeer \n(b) Kennetuck \n(c) Kansas"
-p5 = "Who wrote the 'Harry Potter' series? \n(a) JK Rowling \n(b) JRR Tolkien \n(c) Fyodir Dostoyevski"
-p6 ="What is the currency of India? \n(a) Indian Dollar \n(b) Gold Pieces \n(c) Rupee"
-p7 = "Who is Winnie the Pooh's gloomy donkey friend? \n(a) Tigger \n(b) Eeyore \n(c) Roberto"
-p8 = "What is the standard unit of distance in the metric system? \n(a) Meter \n(b) Foot \n(c) Kilometer"
-p9 = "What chemical element is diamond made of? \n(a) Carbon \n(b) Jewel \n(c) Ruby"
-p10 = "What is the name of the 'tool' needed to play snooker or billiards to hit the ball? \n(a) Stick \n(b) Cue \n(c) Five-Iron"
-
-
-
-questions = [
-    Question.new(p1, "b"),
-    Question.new(p2, "a"),
-    Question.new(p3, "b"),
-    Question.new(p4, "c"),
-    Question.new(p5, "a"),
-    Question.new(p6, "c"),
-    Question.new(p7, "b"),
-    Question.new(p8, "a"),
-    Question.new(p9, "a"),
-    Question.new(p10, "b")
-]
-
-#==============================================================================================================================#
-#   Introductions
-#==============================================================================================================================#
-#   Method to try parse the file --> If it is empty, it will print a fresh array
+#================================= RESULTS
 file = File.read('results.json')
 
-def parse_json(file)
+def parse_json_results(file)
     JSON.parse(file)            # Try parse the file --> If it's empty, we initialize it with []
 rescue
     File.open("results.json", "a") do |f|
     f.write([]).to_json
     end
 end
+#================================= QUESTIONS
+q_file = File.read('questions.json')
+
+def parse_json_questions(file)
+    JSON.parse(file)            # Try parse the file --> If it's empty, we initialize it with []
+rescue
+    File.open("questions.json", "a") do |f|
+    f.write([]).to_json
+    end
+end
+
+
+
+#==============================================================================================================================#
+#   Introductions
+#==============================================================================================================================#
+#   Method to try parse the file --> If it is empty, it will print a fresh array
 
 #==============================================================================================================================#
 #   Application Run
@@ -76,6 +59,35 @@ while true
     entry = gets.chomp.downcase
 
     if entry == "student"       # Student Path
+#================================= Time to generate questions
+        q_file = File.read('questions.json')
+        question_array = parse_json_questions(q_file)
+        
+        p1 = question_array.delete_at(rand(question_array.length))
+        p2 = question_array.delete_at(rand(question_array.length))
+        p3 = question_array.delete_at(rand(question_array.length)) 
+        p4 = question_array.delete_at(rand(question_array.length))
+        p5 = question_array.delete_at(rand(question_array.length)) 
+        p6 = question_array.delete_at(rand(question_array.length))
+        p7 = question_array.delete_at(rand(question_array.length)) 
+        p8 = question_array.delete_at(rand(question_array.length))
+        p9 = question_array.delete_at(rand(question_array.length)) 
+        p10 = question_array.delete_at(rand(question_array.length))
+        
+        working_questions = [
+            Question.new(p1["questions"], p1["answer"]),
+            Question.new(p2["questions"], p2["answer"]),
+            Question.new(p3["questions"], p3["answer"]),
+            Question.new(p4["questions"], p4["answer"]),
+            Question.new(p5["questions"], p5["answer"]),
+            Question.new(p6["questions"], p6["answer"]),
+            Question.new(p7["questions"], p7["answer"]),
+            Question.new(p8["questions"], p8["answer"]),
+            Question.new(p9["questions"], p9["answer"]),
+            Question.new(p10["questions"], p10["answer"])
+        ]
+        
+#================================= Running the test
         system "clear"
         puts "●▬▬▬▬▬▬▬▬▬▬▬▬▬๑۩۩๑▬▬▬▬▬▬▬▬▬▬▬▬●".colorize(:color => :light_blue)
         puts "●▬▬▬▬▬Welcome▬to▬the▬Quiz!▬▬▬▬●".colorize(:color => :light_blue)
@@ -90,13 +102,13 @@ while true
             puts "Invalid selection: Please enter a name."    # TO DO --> MAKE THIS LOOP BACK TO NAME ENTRY
             next
         end
-        def test(questions)
+        def test(working_questions)
             results_file = File.open("results.json")
             answer = "" # We will store all of our users answers inside this variable
             counter = 1
             score = 0
             while counter < 11
-                for question in questions
+                for question in working_questions
                     system "clear"
                     puts "Question #{counter}".colorize(:color => :light_blue)
                     puts question.prompt
@@ -106,29 +118,30 @@ while true
                     end
                     counter += 1
                 end
+                score_counter = counter - 1 #   Attempt to DRY my code, rather than repeat 'counter-1' 7 times below!
                 system "clear"
-                    if score == questions.length()
+                    if score == score_counter
                         puts
                         puts "Congratulations! You have a perfect score."
                         puts
-                    elsif score >= (questions.length() * 0.75)
+                    elsif score >= (score_counter * 0.75)
                         puts
-                        puts "Well done! You received #{score}/#{questions.length()}."
+                        puts "Well done! You received #{score}/#{score_counter}."
                         puts
-                    elsif score >= (questions.length() * 0.5)
+                    elsif score >= (score_counter * 0.5)
                         puts
-                        puts "You received #{score}/#{questions.length()}."
+                        puts "You received #{score}/#{score_counter}."
                         puts
                     else
                         puts
-                        puts "You have failed the quiz, with a score of #{score}/#{questions.length}." 
+                        puts "You have failed the quiz, with a score of #{score}/#{score_counter}." 
                         puts
                     end
             end
             return score
         end
 
-        score = test(questions)
+        score = test(working_questions)
 
         score_string = score.to_s
 
@@ -136,13 +149,13 @@ while true
 
         file = File.read('results.json')
 
-        parse_json(file)    # Call method
+        parse_json_results(file)    # Call method
 
         hash = {"name": student_name, "score": score_string, "date": date.to_s}
 
         file = File.read('results.json')
 
-        working = parse_json(file)
+        working = parse_json_results(file)
 
         working.push(hash)
 
@@ -175,7 +188,7 @@ while true
             puts
 
             file = File.read('results.json')
-            data_hash = parse_json(file)
+            data_hash = parse_json_results(file)
             
             for item in data_hash do
                 puts "Name: " + item["name"].capitalize
@@ -211,9 +224,3 @@ end
 #==============================================================================================================================#
 #           Farewell for now!
 #==============================================================================================================================#
-
-# begin
-#     add()
-# rescue      #==> If line 26 is going to return an error, rescue runs. Only shows if an error between begin & end runs.
-#     p "I don't want this to crash!"
-# end
