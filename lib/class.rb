@@ -20,7 +20,10 @@ def parse_json_results(file)
 rescue
     File.open("./lib/results.json", "a") do |f|
     f.write([]).to_json
-    puts "Empty File: No student results found."
+    puts "Error: Results file corruped."
+    puts
+    puts "● results.JSON has been re-created: Results will now be recorded."
+    puts "● Until new results are recorded, the teacher portal will display blank."
     end
 end
 
@@ -34,7 +37,7 @@ def parse_json_questions(file)
 rescue
     File.open("./lib/questions.json", "a") do |f|
     f.write([]).to_json
-    puts "Error: No questions available. Please contact your teacher."
+    puts
+    puts "Error: Question file corrupted. Please contact your teacher."
     end
 end
-
