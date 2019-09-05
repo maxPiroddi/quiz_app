@@ -8,12 +8,12 @@
 #       TO CREATE A QUESTION, FILL IN THE CODE BELOW
 #
 # 1. Enter question & answers, keeping the format the same (\n(a/b/c) between EVERY option)
-student_name = "Who was the first man on the moon? \n(a) Neil Armstrong \n(b) NASA-Man \n(c) Elon Musk"
+question = "Enter question here \n(a) Answer A \n(b) Answer B \n(c) Answer C"
 #
 # 2. Enter correct option below.
-score = "a"            
+answer = "a"            
 #
-#       TO CREATE A QUESTION, FILL IN THE CODE ABOVE
+#       PLEASE SAVE THIS FILE, AND RUN IN TERMINAL: $ ruby ./lib/question_generator.rb
 #
 #VVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV
 #
@@ -38,23 +38,23 @@ score = "a"
 #
 #
 #
-hash = {"questions": student_name, "answer": score}
+hash = {"questions": question, "answer": answer}
                                           
 require 'json'                           
-file = File.read('questions.json')       
+file = File.read(__dir__ + '/questions.json')       
                                           
 def parse_json(file)                      
     JSON.parse(file)                            
 rescue                                             
-    File.open("questions.json", "a") do |f|
+    File.open(__dir__ + '/questions.json', "a") do |f|
     f.write([]).to_json                    
     end                                  
 end                                
 parse_json(file)                           
-file = File.read('questions.json')
+file = File.read(__dir__ + '/questions.json')
 working = parse_json(file)
 working.push(hash)
-File.open("questions.json","w") do |f|
+File.open(__dir__ + '/questions.json',"w") do |f|
     f.write(working.to_json)               
 end
 puts "Question successfully added."
