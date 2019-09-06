@@ -4,7 +4,7 @@ require 'json'
 require 'colorize'
 require 'time'
 require_relative './lib/class'
-system "clear" #Make sure CLI line is cleared once app starts
+system "clear"
 
 #=====Optional Arguments=======================================================================================================#
 argv_copy = ARGV.map{|i| i}
@@ -18,6 +18,7 @@ if argv_copy.include? "-h"
     puts "Student Portal:"
     puts "● If your 'name' entry is blank, the program will return you to the previous screen."
     puts "● Your name must only contain 'a-z' & 'A-Z'. Any special characters or numbers will not be accepted."
+    puts
     puts "Teacher Portal:"
     puts "● By default, a terminal screen will display 5-6 recent results - depending on terminal-zoom."
     puts "● To see the full results, feel free to zoom in or out, or to scroll up and down."
@@ -36,7 +37,9 @@ if argv_copy.include? "-e"
     system 'ruby ./lib/question_generator.rb'
     exit
 end
+
 #===Application Run============================================================================================================#
+
 while true
     puts "●▬▬▬▬▬▬▬▬▬▬▬▬▬๑۩۩๑▬▬▬▬▬▬▬▬▬▬▬▬●".colorize(:color => :light_blue)
     puts "●▬▬▬▬Welcome▬▬to▬▬QuikQuiz!▬▬▬●".colorize(:color => :light_blue)     # Decorations & Introductions
@@ -50,7 +53,7 @@ while true
         exit
     end
     if entry == "student"                                                      # Student Path
-        while true                                                                          # Time to generate questions
+        while true                                                             # Time to generate questions
             q_file = File.read('./lib/questions.json')
             question_array = parse_json_questions(q_file)
             begin
@@ -64,14 +67,14 @@ while true
                 p8 = question_array.delete_at(rand(question_array.length))
                 p9 = question_array.delete_at(rand(question_array.length)) 
                 p10 = question_array.delete_at(rand(question_array.length))
-            rescue                                                                  # If the questions file is blank, we will re-create with []
+            rescue                                                             # If the questions file is blank, we will re-create with []
                 puts
                 puts "● questions.JSON has been re-created: Please enter new questions."
                 puts
                 break
             end
             begin
-                working_questions = [                                               # Create an array of this sessions questions
+                working_questions = [                                          # Create an array of this sessions questions
                     Question.new(p1["questions"], p1["answer"]),
                     Question.new(p2["questions"], p2["answer"]),
                     Question.new(p3["questions"], p3["answer"]),
@@ -91,11 +94,10 @@ while true
                 puts
                 break
             end
-                                                                        # Running the quiz
+                                                                             # Running the quiz
             puts "●▬▬▬▬▬▬▬▬▬▬▬▬▬๑۩۩๑▬▬▬▬▬▬▬▬▬▬▬▬●".colorize(:color => :light_blue)
             puts "●▬▬▬▬▬Welcome▬to▬the▬Quiz!▬▬▬▬●".colorize(:color => :light_blue)
             puts "●▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬●".colorize(:color => :light_blue)
-            puts "● To return to the previous screen, please press enter."
             puts "● Please enter your name:"
             print    "● "
             student_name = gets.chomp.downcase
@@ -111,28 +113,24 @@ while true
                             puts "Question #{counter}".colorize(:color => :light_blue)
                             puts question.prompt
                             answer = gets.chomp().downcase
-                            if answer.match? /\A[a-c]{1}\z/                             # Answer MUST be a, b or c, else no movement.
-                                if answer == question.answer
-                                    score += 1
+                                if answer.match? /\A[a-c]{1}\z/             # Answer MUST be a, b or c, else no movement.
+                                    counter += 1
+                                    if answer == question.answer
+                                        score += 1
+                                    end
+                                else
+                                    break                                   # Can not proceed if selection is incorrect
                                 end
-                                counter += 1
-                            else
-                                break                                                   # Can not proceed if selection is incorrect
-                            end
                         end
-                        score_counter = counter - 1                                     # Attempt to DRY my code, rather than repeat 'counter-1' 7 times below!
+                        score_counter = counter - 1                         # Attempt to DRY my code, rather than repeat 'counter-1' 7 times below!
                         system "clear"
                             if score == score_counter
                                 puts
                                 puts "Congratulations! You have a perfect score."
                                 puts
-                            elsif score >= (score_counter * 0.75)
-                                puts
-                                puts "Well done! You received #{score}/#{score_counter}."
-                                puts
                             elsif score >= (score_counter * 0.5)
                                 puts
-                                puts "You received #{score}/#{score_counter}."
+                                puts "Well done! You received #{score}/#{score_counter}."
                                 puts
                             else
                                 puts
@@ -140,13 +138,14 @@ while true
                                 puts
                             end
                     end
-                    return score                                                        # Return score for use in storage
+                    return score                                             # Return score for use in storage
                 end
             else
                 puts
                 puts "Name entered not valid - please try again"
                 next
-            end                                                                        # Begin storage process
+            end                                                              # Begin storage process
+
             score = test(working_questions)
 
             score_string = score.to_s
@@ -165,12 +164,11 @@ while true
 
             working.push(hash)
 
-            File.open('./lib/results.json', "w") do |f|
+            File.open('./lib/results.json', "w") do |f|                     # Storage complete
                 f.write(working.to_json)
             end
-                                                                                    # Storage complete
             puts
-            puts "Enter any key to try again, or type 'quit' for main menu!"
+            puts "Enter any key to return to the main menu!"
             reply = gets.chomp.downcase
             if reply == "exit" || "quit"
                 system "clear"
@@ -180,7 +178,7 @@ while true
                 next
             end
         end
-    elsif entry == "teacher"                                                    # Teacher Path
+    elsif entry == "teacher"                                                # Teacher Path
         system "clear"
         puts
         puts "Please enter your password:"
@@ -192,8 +190,7 @@ while true
             puts "Student Quiz Results".colorize(:color => :light_blue)
             puts "●▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬●".colorize(:color => :light_blue)
             puts
-                                                                                # Retrieval of data
-            file = File.read('./lib/results.json')
+            file = File.read('./lib/results.json')                          # Retrieval of data
             data_hash = parse_json_results(file)
             begin
                 for item in data_hash do
@@ -207,14 +204,14 @@ while true
             rescue
                 break
             end
-            puts "Type 'quit' to finish, or any key to return to main menu.".colorize(:color => :light_blue)
+            puts "Type any key to quit".colorize(:color => :light_blue)
             reply = gets.chomp.downcase
-            if reply == "exit" || "quit"                                                  # Exit option
+            if reply == true                                   # Exit option
                 system "clear"
                 break                        
             else
                 system "clear"
-                next
+                break
             end
         end
     else

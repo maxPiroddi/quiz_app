@@ -112,9 +112,13 @@ The application is controlled via text inputs in the terminal, with an initial o
 #
 ### Control Flow Diagram
 
-[Control Flow](./flowchart.pdf)
+[Control Flow](./docs/flowchart.pdf)
  #
 ### Implementation Plan
-[Image One](./screen_one.png)
+[Image One](./docs/screen_one.pdf)
 
-[Image Two](./screen_two.png)
+[Image Two](./docs/screen_two.pdf)
+#
+### Error Testing
+[Error Test](./docs/error_test.pdf)
+#
