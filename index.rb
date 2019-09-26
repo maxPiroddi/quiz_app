@@ -39,7 +39,7 @@ if argv_copy.include? "-e"
 end
 
 #===Application Run============================================================================================================#
-
+# Turn all 'puts' commands to txt, clean up code a lot.
 while true
     puts "●▬▬▬▬▬▬▬▬▬▬▬▬▬๑۩۩๑▬▬▬▬▬▬▬▬▬▬▬▬●".colorize(:color => :light_blue)
     puts "●▬▬▬▬Welcome▬▬to▬▬QuikQuiz!▬▬▬●".colorize(:color => :light_blue)     # Decorations & Introductions
@@ -52,6 +52,8 @@ while true
     if entry == "quit"
         exit
     end
+
+    # Question generation in it's own file, bundled with a question generator accessible WITHIN the application.
     if entry == "student"                                                      # Student Path
         while true                                                             # Time to generate questions
             q_file = File.read('./lib/questions.json')
@@ -94,6 +96,8 @@ while true
                 puts
                 break
             end
+
+            # Transfer to MVC format to clean up code a lot.
                                                                              # Running the quiz
             puts "●▬▬▬▬▬▬▬▬▬▬▬▬▬๑۩۩๑▬▬▬▬▬▬▬▬▬▬▬▬●".colorize(:color => :light_blue)
             puts "●▬▬▬▬▬Welcome▬to▬the▬Quiz!▬▬▬▬●".colorize(:color => :light_blue)
@@ -101,7 +105,7 @@ while true
             puts "● Please enter your name:"
             student_name = gets.chomp.downcase
             system "clear"
-            if student_name.match? /\A[a-zA-Z'-]{2,20}\z/
+            if student_name.match? /\A[a-zA-Z'-]{2,20}\z/ # Provide comment explanations of what RegEx is doing in this section & below.
                 def test(working_questions)
                     results_file = File.open("./lib/results.json")
                     counter = 1
@@ -121,6 +125,7 @@ while true
                                     break                                   # Can not proceed if selection is incorrect
                                 end
                         end
+                        # Check the rubrick for a suggestion to clean this section up (score_counter)
                         score_counter = counter - 1                         # Attempt to DRY my code, rather than repeat 'counter-1' 7 times below!
                         system "clear"
                             if score == score_counter
