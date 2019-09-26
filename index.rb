@@ -55,7 +55,7 @@ while true
     if entry == "student"                                                      # Student Path
         while true                                                             # Time to generate questions
             q_file = File.read('./lib/questions.json')
-            question_array = parse_json_questions(q_file)
+            question_array = JSON.parse(q_file)  
             begin
                 p1 = question_array.delete_at(rand(question_array.length))
                 p2 = question_array.delete_at(rand(question_array.length))
@@ -99,7 +99,6 @@ while true
             puts "●▬▬▬▬▬Welcome▬to▬the▬Quiz!▬▬▬▬●".colorize(:color => :light_blue)
             puts "●▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬●".colorize(:color => :light_blue)
             puts "● Please enter your name:"
-            print    "● "
             student_name = gets.chomp.downcase
             system "clear"
             if student_name.match? /\A[a-zA-Z'-]{2,20}\z/
@@ -126,12 +125,16 @@ while true
                         system "clear"
                             if score == score_counter
                                 puts
-                                puts "Congratulations! You have a perfect score."
+                                puts "Congratulations - You have a perfect score."
                                 puts
                             elsif score >= (score_counter * 0.5)
                                 puts
-                                puts "Well done! You received #{score}/#{score_counter}."
+                                puts "●▬▬▬▬▬▬▬๑۩۩๑▬▬▬▬▬▬▬●".colorize(:color => :light_blue)
+                                puts "    Your Results".colorize(:color => :light_blue)
+                                puts "●▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬●".colorize(:color => :light_blue)
                                 puts
+                                puts "Well done! You received #{score}/#{score_counter}."
+
                             else
                                 puts
                                 puts "You have failed the quiz, with a score of #{score}/#{score_counter}." 
@@ -160,7 +163,7 @@ while true
 
             file = File.read('./lib/results.json')
 
-            working = parse_json_results(file)
+            working = JSON.parse(file)
 
             working.push(hash)
 
@@ -168,7 +171,7 @@ while true
                 f.write(working.to_json)
             end
             puts
-            puts "Enter any key to return to the main menu!"
+            puts "Enter any key to return to the main menu!".colorize(:color => :light_blue)
             reply = gets.chomp.downcase
             if reply == "exit" || "quit"
                 system "clear"

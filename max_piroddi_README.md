@@ -112,13 +112,13 @@ The application is controlled via text inputs in the terminal, with an initial o
 #
 ### Control Flow Diagram
 
-[Control Flow](./docs/flowchart.pdf)
+[Control Flow](./docs/max_piroddi_T1A2-5_flowchart.pdf)
  #
 ### Implementation Plan
-[Image One](./docs/screen_one.pdf)
+[Image One](./docs/max_piroddi_T1A2-14_screen_one.pdf)
 
-[Image Two](./docs/screen_two.pdf)
+[Image Two](./docs/max_piroddi_T1A2-14_screen_two.pdf)
 #
 ### Error Testing
-[Error Test](./docs/error_test.pdf)
+[Error Test](./docs/max_piroddi_T1A2-12_error_test.pdf)
 #

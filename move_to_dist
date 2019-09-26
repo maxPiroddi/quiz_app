@@ -3,3 +3,4 @@ mkdir ./dist
 cp ./index.rb ./dist
 cp ./lib ./dist
 cp ./docs ./dist
+cp max_piroddi_README.md ./dist
