@@ -1,7 +1,7 @@
 #=====Introductions============================================================================================================#
 
 require 'json'
-require 'colorize'
+require 'colorize'  # Remove colorize, only for assessment
 require 'time'
 require_relative './lib/class'
 system "clear"
@@ -10,6 +10,7 @@ system "clear"
 argv_copy = ARGV.map{|i| i}
 ARGV.clear
 
+#   Remove optional arguments as these are not required for real app
 
 if argv_copy.include? "-h"
     puts "Welcome to the help menu!"
@@ -188,10 +189,10 @@ while true
         end
     elsif entry == "teacher"                                                # Teacher Path
         system "clear"
-        puts
-        puts "Please enter your password:"
+        puts    # Store multiple teacher users, each with ID and password
+        puts "Please enter your password:"  # Store in secure hash file
         password = gets.chomp
-        if password == "password"
+        if password == "password"   # Store password in secure file?
             system "clear"
             puts
             puts "●▬▬▬▬▬▬▬๑۩۩๑▬▬▬▬▬▬▬●".colorize(:color => :light_blue)
